@@ -1,0 +1,82 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* background gradient */
+.square-bg {
+  position: relative;
+
+  background: linear-gradient(-45deg, #F7FF9C, #8D7AFF, #23d5ab, #23a6d5);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* background gradient movement */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* background squares */
+.square {
+  position: absolute;
+  z-index: 0;
+  box-shadow: 0 0 32px 8px rgba(0, 0, 0, 0.25)
+}
+
+.square1 {
+  width: 80%;
+  height: 60%;
+  rotate: 30deg;
+  bottom: -25%;
+  left: -15%;
+}
+
+.square2 {
+  width: 80%;
+  height: 60%;
+  rotate: 30deg;
+  bottom: -25%;
+  left: -15%;
+  transform: translate(45%, 0%);
+}
+
+.square3 {
+  width: 65%;
+  height: 90%;
+  rotate: 30deg;
+  top: -45%;
+  left: 0;
+}
+
+.square4 {
+  width: 70%;
+  height: 200%;
+  rotate: 30deg;
+  top: 0%;
+  right: -25%;
+}

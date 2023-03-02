@@ -1,0 +1,129 @@
+/* login */
+.login-bg {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  background: linear-gradient(-45deg, #A9FFF0 40%, #66A3FF 100%);
+  border-radius: 40px;
+  display: flex;
+  box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.25);
+}
+
+.split {
+  flex: 1;
+}
+
+.left {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.left h1 {
+  font-size: 4.2rem;
+  text-align: center;
+  padding-bottom: 10px;
+  color: white;
+  font-weight: 800;
+}
+
+.left img {
+  height: 100%;
+}
+
+.right {
+  background: #fff;
+  border-radius: 40px;
+  border-bottom-left-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+form {
+  width: 65%;
+  height: 85%;
+  background: #FFB7B7;
+  border-radius: 30px;
+  box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.form-title {
+  font-size: 3.2rem;
+  padding-top: 2.5%;
+  padding-bottom: 0.5%;
+  margin-left: 10%; 
+  position: relative;
+  align-self: flex-start;
+}
+
+.form-title::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: aqua;
+  border-radius: 25px 25px 0 0;
+}
+
+.form-inner {
+  width: 100%;
+  background: #FFF;
+  border-radius: 30px;
+  box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.25);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  flex-direction: column;
+}
+
+.form-inner div {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+label {
+  width: 100%;
+  display: block;
+  color: #47ACFF;
+  font-size: 2.6rem
+}
+
+.input-style {
+  width: 100%;
+  display: block;
+  outline: 0;
+  border-width: 0 0 3px;
+  padding: 3px;
+  font-size: 1.8rem
+}
+
+.input-style:focus {
+  border-color: lightblue;
+  border-width: 0 0 3px;
+}
+
+.submit-btn {
+  all: unset;
+  cursor: pointer;
+  width: 100%;
+  font-size: 2.2rem;
+  text-align: center;
+  background: #47ACFF;
+  color: white;
+  padding: 8px 0;
+  border-radius: 16px;
+}
+
+.submit-btn:hover {
+  background: #67baff;
+}

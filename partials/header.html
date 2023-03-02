@@ -1,0 +1,186 @@
+
+<nav>
+  <ul>
+    <li><a href="/pages/schedule/schedule.html" class="nav-link">Schedule</a></li>
+    <li><a href="/pages/individuals/individuals.html" class="nav-link">Individuals</a></li>
+    <li><a href="/pages/teams/teams.html" class="nav-link">Teams</a></li>
+    <li><a href="/pages/events/events.html" class="nav-link">Events</a></li>
+    <li><a href="/pages/scoring/scoring.html" class="nav-link">Scoring</a></li>
+  </ul>
+</nav>
+<div class="hdr-content">
+  <p class="hdr-next-event"></p>
+  <p class="hdr-time">00:00:00</p>
+  <div class="hdr-username-dropdown">
+    <p class="hdr-username">unknownUser</p>
+    <ul class="dropdown-menu">
+      <li><button class="logout-btn">Logout</button></li>
+    </ul>
+  </div>
+</div>
+
+<!-- styles -->
+<style>
+  header {
+    position: fixed;
+    top: 0;
+
+    width: 100%;
+    height: 70px;
+    padding: 0 30px;
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  nav ul {
+    display: flex;
+    gap: 15px;
+  }
+
+  nav ul li {
+    list-style-type: none;
+  }
+
+  nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 3rem;
+  }
+
+  /* changes underline if current page */
+  nav ul li a.nav-link {
+    text-decoration: none;
+    color: white;
+    font-size: 3rem;
+  }
+
+  nav ul li a.nav-link.current {
+    text-decoration: underline;
+  }
+
+  header p {
+    font-size: 3rem;
+    color: white;
+  }
+
+  .hdr-content {
+    display: flex;
+    gap: 55px;
+  }
+
+  .hdr-content span {
+    font-weight: 700;
+  }
+
+  .hdr-username-dropdown {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    list-style-type: none;
+  }
+
+  .hdr-username-dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .logout-btn {
+    all: unset;
+    cursor: pointer;
+    padding: 7px;
+    font-size: 2.4rem;
+    border: 2px solid black;
+    background: white;
+    color: black;
+  }
+
+  .logout-btn:hover {
+    background-color: lightgrey;
+  }
+</style>
+<script>
+  $(document).ready(function() {
+
+    // updates nav with current page
+    var currentPagePath = window.location.pathname;
+    $('nav ul li a[href="' + currentPagePath + '"]').addClass('current');
+
+    // get the events from the JSON file
+    $.getJSON("../../events.json", function(data) {
+      var teamEvents = data.teamEvents;
+      var indEvents = data.indEvents;
+
+      // sort the events by start time
+      teamEvents.sort(function(a, b) {
+        return a.startTime.localeCompare(b.startTime);
+      });
+
+      indEvents.sort(function(a, b) {
+        return a.startTime.localeCompare(b.startTime);
+      });
+
+      // find the next team event
+      var now = new Date();
+      var nextTeamEvent = null;
+      for (var i = 0; i < teamEvents.length; i++) {
+        var eventTime = new Date(now.toDateString() + " " + teamEvents[i].startTime);
+        if (eventTime >= now) {
+          nextTeamEvent = teamEvents[i];
+          break;
+        }
+      }
+
+      // find the next ind event
+      var nextIndEvent = null;
+      for (var i = 0; i < indEvents.length; i++) {
+        var eventTime = new Date(now.toDateString() + " " + indEvents[i].startTime);
+        if (eventTime >= now) {
+          nextIndEvent = indEvents[i];
+          break;
+        }
+      }
+
+      // display the next event
+      if (nextTeamEvent && (!nextIndEvent || nextTeamEvent.startTime.localeCompare(nextIndEvent.startTime) < 0)) {
+        $('.hdr-next-event').html(`Next <span>Team</span> Event: ${nextTeamEvent.name} @ ${nextTeamEvent.startTime}`);
+      } else if (nextIndEvent && (!nextTeamEvent || nextIndEvent.startTime.localeCompare(nextTeamEvent.startTime) < 0)) {
+        $('.hdr-next-event').html(`Next <span>Individual</span> Event: ${nextIndEvent.name} @ ${nextIndEvent.startTime}`);
+      } else {
+        $('.hdr-next-event').text("No upcoming events");
+      }
+    });
+
+    // sets the clock in hh:mm:ss
+    setInterval(function() {
+      var now = new Date();
+      var hours = now.getHours();
+      var minutes = now.getMinutes();
+      var seconds = now.getSeconds();
+      hours = (hours < 10 ? "0" : "") + hours;
+      minutes = (minutes < 10 ? "0" : "") + minutes;
+      seconds = (seconds < 10 ? "0" : "") + seconds;
+      $('.hdr-time').text(hours + ":" + minutes + ":" + seconds);
+    }, 1000);
+
+    // sets the username
+    var user = JSON.parse(localStorage.getItem('user'));
+    var username = user.username;
+    $('.hdr-username').text(`${username} ↓`)
+
+    // logs out user
+    $('.logout-btn').click(function() {
+      localStorage.removeItem('user'); // remove user information from local storage
+      window.location.href = '/pages/auth/auth.html'; // redirect to login page
+    });
+});
+
+</script>
