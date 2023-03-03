@@ -1,33 +1,37 @@
 {
-  "teamEvents": [
+  "events": [
     {
+      "type": "Team",
       "name": "Football",
       "startTime": "23:00",
       "participants": ["team1", "team2", "team3"]
     },
     {
+      "type": "Team",
       "name": "Badminton",
       "startTime": "23:30",
       "participants": ["team1", "team2", "team3"]
     },
     {
+      "type": "Team",
       "name": "Rugby",
       "startTime": "23:20",
       "participants": ["team1", "team2", "team3"]
-    }
-  ],
-  "indEvents": [
+    },
     {
+      "type": "Individual",
       "name": "Football",
-      "startTime": "23:10",
+      "startTime": "15:10",
       "participants": ["team1", "team2", "team3"]
     },
     {
+      "type": "Individual",
       "name": "Badminton",
       "startTime": "23:40",
       "participants": ["team1", "team2", "team3"]
     },
     {
+      "type": "Individual",
       "name": "Rugby",
       "startTime": "23:50",
       "participants": ["team1", "team2", "team3"]

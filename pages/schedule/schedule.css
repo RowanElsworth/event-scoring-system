@@ -1,5 +1,77 @@
 
-button {
-  position: absolute;
+main {
   z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding-top: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.next-event {
+  width: 30%;
+  height: 90%;
+}
+
+.next-event p {
+  font-size: 4.2rem;
+  text-align: center;
+}
+
+.event-type, .event-name span {
+  font-weight: 700;
+}
+
+.next-event div {
+  padding-top: 10px;
+}
+
+.next-event div p {
+  font-size: 4rem;
+}
+
+.upcoming-events {
+  width: 50%;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.upcoming-title {
+  font-size: 4rem;
+  text-align: center;
+  padding-bottom: 30px;
+}
+
+.upcoming-events-list {
+  width: 80%;
+  font-size: 5rem;
+  letter-spacing: 1px;
+}
+
+.upcoming-events-list > p {
+  position: relative;
+}
+
+.upcoming-events-list > p::before {
+  position: absolute;
+  bottom: 0;
+  content: "";
+  width: 100%;
+  height: 3px;
+  background: black;
+}
+
+.upcoming-events-list span:nth-of-type(1) {
+  font-weight: 700;
+}
+
+.upcoming-events-list span:nth-of-type(2) {
+  float: right;
+}
+
+.upcoming-events-list span:nth-of-type(2) a {
+  text-decoration: none;
 }

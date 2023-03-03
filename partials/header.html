@@ -23,6 +23,7 @@
 <style>
   header {
     position: fixed;
+    z-index: 2;
     top: 0;
 
     width: 100%;
@@ -115,49 +116,51 @@
     $('nav ul li a[href="' + currentPagePath + '"]').addClass('current');
 
     // get the events from the JSON file
-    $.getJSON("../../events.json", function(data) {
-      var teamEvents = data.teamEvents;
-      var indEvents = data.indEvents;
+    function updateNextEvent() {
+      $.getJSON("../../events.json", function(data) {
+        var teamEvents = data.teamEvents;
+        var indEvents = data.indEvents;
 
-      // sort the events by start time
-      teamEvents.sort(function(a, b) {
-        return a.startTime.localeCompare(b.startTime);
-      });
+        // sort the events by start time
+        teamEvents.sort(function(a, b) {
+          return a.startTime.localeCompare(b.startTime);
+        });
 
-      indEvents.sort(function(a, b) {
-        return a.startTime.localeCompare(b.startTime);
-      });
+        indEvents.sort(function(a, b) {
+          return a.startTime.localeCompare(b.startTime);
+        });
 
-      // find the next team event
-      var now = new Date();
-      var nextTeamEvent = null;
-      for (var i = 0; i < teamEvents.length; i++) {
-        var eventTime = new Date(now.toDateString() + " " + teamEvents[i].startTime);
-        if (eventTime >= now) {
-          nextTeamEvent = teamEvents[i];
-          break;
+        // finds the next event
+        function findNextEvent(events) {
+          var now = new Date();
+          for (var i = 0; i < events.length; i++) {
+            var eventTime = new Date(now.toDateString() + " " + events[i].startTime);
+            if (eventTime >= now) {
+              return events[i];
+            }
+          }
+          return null;
         }
-      }
 
-      // find the next ind event
-      var nextIndEvent = null;
-      for (var i = 0; i < indEvents.length; i++) {
-        var eventTime = new Date(now.toDateString() + " " + indEvents[i].startTime);
-        if (eventTime >= now) {
-          nextIndEvent = indEvents[i];
-          break;
+        // finds event for team and individuals
+        var nextTeamEvent = findNextEvent(teamEvents);
+        var nextIndEvent = findNextEvent(indEvents);
+
+        // display the next event
+        if (nextTeamEvent && (!nextIndEvent || nextTeamEvent.startTime.localeCompare(nextIndEvent.startTime) < 0)) {
+          $('.hdr-next-event').html(`Next Event: <span>Team</span> ${nextTeamEvent.name} @ ${nextTeamEvent.startTime}`);
+        } else if (nextIndEvent && (!nextTeamEvent || nextIndEvent.startTime.localeCompare(nextTeamEvent.startTime) < 0)) {
+          $('.hdr-next-event').html(`Next Event: <span>Individual</span> ${nextIndEvent.name} @ ${nextIndEvent.startTime}`);
+        } else {
+          $('.hdr-next-event').text(`No upcoming events`);
         }
-      }
 
-      // display the next event
-      if (nextTeamEvent && (!nextIndEvent || nextTeamEvent.startTime.localeCompare(nextIndEvent.startTime) < 0)) {
-        $('.hdr-next-event').html(`Next <span>Team</span> Event: ${nextTeamEvent.name} @ ${nextTeamEvent.startTime}`);
-      } else if (nextIndEvent && (!nextTeamEvent || nextIndEvent.startTime.localeCompare(nextTeamEvent.startTime) < 0)) {
-        $('.hdr-next-event').html(`Next <span>Individual</span> Event: ${nextIndEvent.name} @ ${nextIndEvent.startTime}`);
-      } else {
-        $('.hdr-next-event').text("No upcoming events");
-      }
-    });
+        // schedule the next update
+        window.requestAnimationFrame(updateNextEvent);
+      });
+    }
+
+    window.requestAnimationFrame(updateNextEvent);
 
     // sets the clock in hh:mm:ss
     setInterval(function() {
