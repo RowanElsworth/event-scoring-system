@@ -82,6 +82,17 @@ html {
 }
 
 /* main content */
+main {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding-top: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
 .content__box {
   background: linear-gradient(135deg, #A9FFF0 35%, #66A3FF 100%);
   border-radius: 3%;

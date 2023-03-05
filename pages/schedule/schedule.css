@@ -1,14 +1,4 @@
 
-main {
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  padding-top: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
 .next-event {
   width: 30%;
   height: 90%;
@@ -46,9 +36,11 @@ main {
 }
 
 .upcoming-events-list {
-  width: 80%;
+  width: 100%;
   font-size: 5rem;
   letter-spacing: 1px;
+  overflow-y: auto;
+  padding: 0 5%;
 }
 
 .upcoming-events-list > p {

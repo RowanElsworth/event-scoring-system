@@ -15,13 +15,13 @@
     {
       "type": "Team",
       "name": "Rugby",
-      "startTime": "23:20",
+      "startTime": "16:20",
       "participants": ["team1", "team2", "team3"]
     },
     {
       "type": "Individual",
       "name": "Football",
-      "startTime": "15:10",
+      "startTime": "17:00",
       "participants": ["team1", "team2", "team3"]
     },
     {
@@ -34,6 +34,12 @@
       "type": "Individual",
       "name": "Rugby",
       "startTime": "23:50",
+      "participants": ["team1", "team2", "team3"]
+    },
+    {
+      "type": "Individual",
+      "name": "Tennis",
+      "startTime": "17:50",
       "participants": ["team1", "team2", "team3"]
     }
   ]

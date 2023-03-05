@@ -16,8 +16,91 @@
     <div class="square square2"></div>
     <div class="square square3"></div>
     <div class="square square4"></div>
-    <!-- main -->
+    <!-- header -->
     <header id="header"></header>
+    <!-- main content -->
+    <main>
+      <section class="content__box events individual">
+        <p class="event-title">Individual Events</p>
+        <!-- header -->
+        <div class="header">
+          <p class="header-title">Name</p>
+          <p class="header-title">Start</p>
+        </div>
+        <!-- table -->
+        <div class="table-container">
+          <div class="row">
+            <div class="cols">
+              <div class="col-left">
+                <div class="event-name">
+                  <p>Example event</p>
+                </div>
+              </div>
+              <div class="col-right">
+                <div class="event-start-controls">
+                  <p>00:00</p>
+                  <button class="edit-btn">Edit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button data-type="Individual" class="add-btn">Add Event</button>
+      </section>
+      <section class="content__box events team">
+        <p class="event-title">Team Events</p>
+        <!-- header -->
+        <div class="header">
+          <p class="header-title">Name</p>
+          <p class="header-title">Start</p>
+        </div>
+        <!-- table -->
+        <div class="table-container">
+          <div class="row">
+            <div class="cols">
+              <div class="col-left">
+                <div class="event-name">
+                  <p>Example event</p>
+                </div>
+              </div>
+              <div class="col-right">
+                <div class="event-start-controls">
+                  <p>00:00</p>
+                  <button class="edit-btn">Edit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button data-type="Team" class="add-btn">Add Event</button>
+      </section>
+      <section class="add-event-popup-container">
+        <div class="add-event-popup">
+          <button class="close-btn">X</button>
+          <h2>Add Event</h2>
+            <label for="name">Event Name:</label>
+            <input type="text" id="name" name="name">
+            <label for="start-time">Start Time:</label>
+            <input type="time" id="start-time" name="start-time">
+            <button class="submit-btn">Submit</button>
+        </div>
+      </section>
+      <section class="edit-event-popup-container">
+        <div class="edit-event-popup">
+          <button class="close-btn">X</button>
+          <h2>Edit Event</h2>
+          <p class="edit-event-type"></p>
+          <input class="edit-event-name" type="text" placeholder=""></input>
+          <input class="edit-event-time" type="time" placeholder=""></input>
+          <p>Participants</p>
+          <div class="participants-array"></div>
+          <button>Add Participant</button>
+          <button class="confirm-btn">Confirm Changes</button>
+          <button class="delete-btn">Delete Event</button>
+          <button class="cancel-btn">cancel</button>
+        </div>
+      </section>
+    </main>
   </section>
   <script src="events.js"></script>
 </body>

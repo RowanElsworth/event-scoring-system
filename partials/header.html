@@ -9,10 +9,11 @@
   </ul>
 </nav>
 <div class="hdr-content">
+  <button class="reset-local">Reset local storage</button>
   <p class="hdr-next-event"></p>
   <p class="hdr-time">00:00:00</p>
   <div class="hdr-username-dropdown">
-    <p class="hdr-username">unknownUser</p>
+    <p class="hdr-username">undefined</p>
     <ul class="dropdown-menu">
       <li><button class="logout-btn">Logout</button></li>
     </ul>
@@ -29,7 +30,8 @@
     width: 100%;
     height: 70px;
     padding: 0 30px;
-    background: black;
+    background: transparent;
+    border-bottom: 1px solid black;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -46,14 +48,14 @@
 
   nav ul li a {
     text-decoration: none;
-    color: white;
+    color: black;
     font-size: 3rem;
   }
 
   /* changes underline if current page */
   nav ul li a.nav-link {
     text-decoration: none;
-    color: white;
+    color: black;
     font-size: 3rem;
   }
 
@@ -63,7 +65,7 @@
 
   header p {
     font-size: 3rem;
-    color: white;
+    color: black;
   }
 
   .hdr-content {
@@ -110,57 +112,45 @@
 </style>
 <script>
   $(document).ready(function() {
+    updateNextEvent();
+
+    $('.reset-local').click(function() {
+      localStorage.setItem('events', "[]");
+      location.reload();
+    })
 
     // updates nav with current page
     var currentPagePath = window.location.pathname;
     $('nav ul li a[href="' + currentPagePath + '"]').addClass('current');
 
-    // get the events from the JSON file
     function updateNextEvent() {
-      $.getJSON("../../events.json", function(data) {
-        var teamEvents = data.teamEvents;
-        var indEvents = data.indEvents;
-
-        // sort the events by start time
-        teamEvents.sort(function(a, b) {
-          return a.startTime.localeCompare(b.startTime);
-        });
-
-        indEvents.sort(function(a, b) {
-          return a.startTime.localeCompare(b.startTime);
-        });
-
-        // finds the next event
-        function findNextEvent(events) {
-          var now = new Date();
-          for (var i = 0; i < events.length; i++) {
-            var eventTime = new Date(now.toDateString() + " " + events[i].startTime);
-            if (eventTime >= now) {
-              return events[i];
-            }
+      let events = JSON.parse(localStorage.getItem('events'))
+      var currentTime = new Date();
+      var nextEvent = null;
+      var nextEventTime = null;
+      
+      if (events && events.length > 0) { // Check if there is items in local storage
+        // Loop through all events
+        $.each(events, function(index, event) {
+          var eventTime = new Date();
+          var timeParts = event.startTime.split(':');
+          eventTime.setHours(timeParts[0]);
+          eventTime.setMinutes(timeParts[1]);
+          
+          // If event is in the future and sooner than the current next event, set it as the new next event
+          if (eventTime > currentTime && (nextEventTime == null || eventTime < nextEventTime)) {
+            nextEvent = event;
+            nextEventTime = eventTime;
           }
-          return null;
-        }
+        });
+      }
+      
+      // Display the name of the next event 
+      $('.hdr-next-event').html(`Next event: ${nextEvent ? nextEvent.name + ' @ ' + nextEvent.startTime : 'No upcoming events'}`);
+    };
 
-        // finds event for team and individuals
-        var nextTeamEvent = findNextEvent(teamEvents);
-        var nextIndEvent = findNextEvent(indEvents);
-
-        // display the next event
-        if (nextTeamEvent && (!nextIndEvent || nextTeamEvent.startTime.localeCompare(nextIndEvent.startTime) < 0)) {
-          $('.hdr-next-event').html(`Next Event: <span>Team</span> ${nextTeamEvent.name} @ ${nextTeamEvent.startTime}`);
-        } else if (nextIndEvent && (!nextTeamEvent || nextIndEvent.startTime.localeCompare(nextTeamEvent.startTime) < 0)) {
-          $('.hdr-next-event').html(`Next Event: <span>Individual</span> ${nextIndEvent.name} @ ${nextIndEvent.startTime}`);
-        } else {
-          $('.hdr-next-event').text(`No upcoming events`);
-        }
-
-        // schedule the next update
-        window.requestAnimationFrame(updateNextEvent);
-      });
-    }
-
-    window.requestAnimationFrame(updateNextEvent);
+    // Call the updateNextEvent function every minute
+    setInterval(updateNextEvent, 60000);
 
     // sets the clock in hh:mm:ss
     setInterval(function() {
@@ -184,6 +174,5 @@
       localStorage.removeItem('user'); // remove user information from local storage
       window.location.href = '/pages/auth/auth.html'; // redirect to login page
     });
-});
-
+  });
 </script>
