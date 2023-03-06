@@ -146,7 +146,7 @@
       }
       
       // Display the name of the next event 
-      $('.hdr-next-event').html(`Next event: ${nextEvent ? nextEvent.name + ' @ ' + nextEvent.startTime : 'No upcoming events'}`);
+      $('.hdr-next-event').html(`Next event: ${nextEvent ? `<span>${nextEvent.type}</span> ${nextEvent.name} @ ${nextEvent.startTime}` : 'No upcoming events'}`);
     };
 
     // Call the updateNextEvent function every minute

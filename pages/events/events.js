@@ -70,8 +70,19 @@ $(document).ready(function() {
     var startTime = $("#start-time").val();
 
     // Determine the next index for the new event
+    // Get the events from local storage
     var events = JSON.parse(localStorage.getItem('events'));
-    var index = events.length + 1;
+
+    // Find the largest index in the events array
+    var largestIndex = 0;
+    events.forEach(function(event) {
+      if (event.index > largestIndex) {
+        largestIndex = event.index;
+      }
+    });
+
+    // Sets the new index
+    var index = largestIndex + 1;
 
     // Create a new event object
     var newEvent = {
@@ -81,7 +92,6 @@ $(document).ready(function() {
       startTime: startTime,
       participants: []
     };
-    console.log(newEvent)
 
     // Push to local storage
     if (localStorage.getItem('events') == undefined) {
@@ -134,8 +144,6 @@ $(document).ready(function() {
     events[eventIndex].startTime = startTime;
     // Update the events array in local storage
     localStorage.setItem('events', JSON.stringify(events));
-    // Hide the edit-event-popup
-    $(".edit-event-popup-container").hide();
     // Reload the page
     location.reload();
   });
@@ -151,8 +159,6 @@ $(document).ready(function() {
     });
     // Update the events array in local storage
     localStorage.setItem('events', JSON.stringify(events));
-    // Hide the edit-event-popup
-    $(".edit-event-popup-container").hide();
     // Reload the page
     location.reload();
   });

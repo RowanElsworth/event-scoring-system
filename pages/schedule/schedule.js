@@ -15,36 +15,40 @@ $(document).ready(function() {
   
   function updateNextEvent() {
     let events = JSON.parse(localStorage.getItem('events'))
-      var currentTime = new Date();
-      var nextEvent = null;
-      var nextEventTime = null;
+    var currentTime = new Date();
+    var nextEvent = null;
+    var nextEventTime = null;
+    
+    // Loop through all events
+    $.each(events, function(index, event) {
+      var eventTime = new Date();
+      var timeParts = event.startTime.split(':');
+      eventTime.setHours(timeParts[0]);
+      eventTime.setMinutes(timeParts[1]);
       
-      // Loop through all events
-      $.each(events, function(index, event) {
-        var eventTime = new Date();
-        var timeParts = event.startTime.split(':');
-        eventTime.setHours(timeParts[0]);
-        eventTime.setMinutes(timeParts[1]);
-        
-        // If event is in the future and sooner than the current next event, set it as the new next event
-        if (eventTime > currentTime && (nextEventTime == null || eventTime < nextEventTime)) {
-          nextEvent = event;
-          nextEventTime = eventTime;
-        }
-      });
-      
-      // Display the name of the next event 
+      // If event is in the future and sooner than the current next event, set it as the new next event
+      if (eventTime > currentTime && (nextEventTime == null || eventTime < nextEventTime)) {
+        nextEvent = event;
+        nextEventTime = eventTime;
+      }
+    });
+    
+    // Update the DOM only if nextEvent is not null
+    if (nextEvent) {
       $('.event-type').html(`${nextEvent.type}`);
       $('.event-name').html(`<span>${nextEvent.name}</span> @ ${nextEvent.startTime}`);
+      // Empty the event-participants div before appending the participants of the next event
+      $('.event-participants').empty();
       // Append participants of next event one by one to the upcoming-events-list
-      var participantsList = '';
       $.each(nextEvent.participants, function(index, participant) {
-        participantsList += `<p>${participant}</p>`;
+        $('.event-participants').append(`<p>${participant}</p>`);
       });
-      $('.event-participants').html(participantsList);
-    };
+    }
+  };
+  
+  
   // Call the updateNextEvent function every minute
-  setInterval(updateNextEvent, 60000);
+  setInterval(updateNextEvent, 60000);  
   
   function updateEventList() {
       let events = JSON.parse(localStorage.getItem('events'))

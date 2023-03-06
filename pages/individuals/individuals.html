@@ -16,8 +16,47 @@
     <div class="square square2"></div>
     <div class="square square3"></div>
     <div class="square square4"></div>
-    <!-- main -->
+    <!-- header -->
     <header id="header"></header>
+    <!-- main -->
+    <main>
+      <!-- list of individual participants -->
+      <section class="content__box ind-list-sect">
+        <div class="ind-list">
+          
+        </div>
+        <button class="add-part-btn">Add Participant</button>
+      </section>
+      <!-- edit individual area -->
+      <section class="content__box ind-edit">
+        <div class="ind-edit-name">
+          <input></input>
+        </div>
+        <div class="ind-edit-events-container">
+          <div class="ind-edit-events">
+            <p class="ind-edit-events-title"></p>
+            <div class="ind-edit-events-list">
+            </div>
+            <button class="ind-edit-events-btn">Modify Events</button>
+          </div>
+        </div>
+        <button class="confirm">Confirm Changes</button>
+      </section>
+      <section class="modify-event-popup-container">
+        <div class="modify-event-popup">
+          <button class="close-btn">X</button>
+          <p>Modify Events</p>
+          <div class="events-list">
+            
+          </div>
+          <div class="btn-container">
+            <button class="confirm-btn">Confirm</button>
+            <button class="cancel-btn">Cancel</button>
+          </div>
+
+        </div>
+      </section>
+    </main>
   </section>
   <script src="individuals.js"></script>
 </body>
