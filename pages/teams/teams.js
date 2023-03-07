@@ -79,7 +79,7 @@ $(document).ready(function() {
     editIndex = index;
     // Get the teamParticipants array from local storage
     var teamParticipants = JSON.parse(localStorage.getItem("teamParticipants"));
-    // Find the JSON object with the specified index
+    // Find the object with the specified index
     var participant = null;
     $.each(teamParticipants, function(i, p) {
       if (p.index === editIndex) {
@@ -94,8 +94,8 @@ $(document).ready(function() {
 
     // Find events with matching indexes and append their names to the events list
     var events = JSON.parse(localStorage.getItem("teamEvents"));
-    $.each(participant.events, function(i, eventObj) {
-      var event = events.find(e => e.index === eventObj.eventIndex);
+    $.each(participant.events, function(i, eventIndex) {
+      var event = events.find(e => e.index === eventIndex);
       if (event) {
         $('.team-edit-events-list').append(`<p>${event.name} <span>${event.startTime}</span></p>`);
       }
@@ -239,10 +239,7 @@ $(document).ready(function() {
       if (participants[i].index === editIndex) {
         var events = [];
         $.each(checkedIndices, function(index, eventIndex) {
-          events.push({
-            eventIndex: eventIndex,
-            userScore: 0
-          });
+          events.push(eventIndex);
         });
         participants[i].events = events;
         break;

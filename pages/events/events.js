@@ -24,7 +24,7 @@ $(document).ready(function() {
   // Sort the team events by name
   teamEvents.sort((a, b) => a.name.localeCompare(b.name));
 
-  // Loop through the individual events and add them to the events table
+  // Loop through the individual events and add them to the individual events table
   indEvents.forEach(function(event) {
     // Create a new row for the event
     var newRow = $("<div>").addClass("row");
@@ -51,10 +51,10 @@ $(document).ready(function() {
     newRow.append(colsDiv);
 
     // Add the new row to the individual events table
-    $(".events.individual .table-container").append(newRow);
+    $(".individual .table-container").append(newRow);
   });
 
-  // Loop through the team events and add them to the events table
+  // Loop through the team events and add them to the team events table
   teamEvents.forEach(function(event) {
     // Create a new row for the event
     var newRow = $("<div>").addClass("row");
