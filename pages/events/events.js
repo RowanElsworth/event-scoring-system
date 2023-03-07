@@ -15,28 +15,30 @@ $(document).ready(function() {
   }
 
   // Out puts the events in alphabetical order to the screen
-  let events = JSON.parse(localStorage.getItem('events'))
-  // Sort the events by name
-  events.sort((a, b) => a.name.localeCompare(b.name));
+  let indEvents = JSON.parse(localStorage.getItem('indEvents')) || [];
+  let teamEvents = JSON.parse(localStorage.getItem('teamEvents')) || [];
 
-  // Loop through the events and add them to the events table
-  events.forEach(function(event) {
-    // Determine the type of the event (team or individual)
-    var eventTypeClass = event.type === "Team" ? "team" : "individual";
-  
+  // Sort the individual events by name
+  indEvents.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Sort the team events by name
+  teamEvents.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Loop through the individual events and add them to the events table
+  indEvents.forEach(function(event) {
     // Create a new row for the event
     var newRow = $("<div>").addClass("row");
-  
+
     // Create the cols div for the event
     var colsDiv = $("<div>").addClass("cols");
-    
+
     // Create the left column for the event name
     var colLeft = $("<div>").addClass("col-left");
     var eventName = $("<div>").addClass("event-name");
     eventName.append($("<p>").text(event.name));
     colLeft.append(eventName);
     colsDiv.append(colLeft);
-  
+
     // Create the right column for the start time and edit button
     var colRight = $("<div>").addClass("col-right");
     var startControls = $("<div>").addClass("event-start-controls");
@@ -44,12 +46,42 @@ $(document).ready(function() {
     startControls.append($("<button>").addClass("edit-btn").text("Edit").attr("data-index", event.index));
     colRight.append(startControls);
     colsDiv.append(colRight);
-  
+
     // Add the cols div to the row
     newRow.append(colsDiv);
-  
-    // Add the new row to the events table
-    $(".events." + eventTypeClass + " .table-container").append(newRow);
+
+    // Add the new row to the individual events table
+    $(".events.individual .table-container").append(newRow);
+  });
+
+  // Loop through the team events and add them to the events table
+  teamEvents.forEach(function(event) {
+    // Create a new row for the event
+    var newRow = $("<div>").addClass("row");
+
+    // Create the cols div for the event
+    var colsDiv = $("<div>").addClass("cols");
+
+    // Create the left column for the event name
+    var colLeft = $("<div>").addClass("col-left");
+    var eventName = $("<div>").addClass("event-name");
+    eventName.append($("<p>").text(event.name));
+    colLeft.append(eventName);
+    colsDiv.append(colLeft);
+
+    // Create the right column for the start time and edit button
+    var colRight = $("<div>").addClass("col-right");
+    var startControls = $("<div>").addClass("event-start-controls");
+    startControls.append($("<p>").text(event.startTime));
+    startControls.append($("<button>").addClass("edit-btn").text("Edit").attr("data-index", event.index));
+    colRight.append(startControls);
+    colsDiv.append(colRight);
+
+    // Add the cols div to the row
+    newRow.append(colsDiv);
+
+    // Add the new row to the team events table
+    $(".team .table-container").append(newRow);
   });
 
   // ~~~ Add Event ~~~
@@ -71,17 +103,26 @@ $(document).ready(function() {
 
     // Determine the next index for the new event
     // Get the events from local storage
-    var events = JSON.parse(localStorage.getItem('events'));
+    let events, eventStorageKey;
+    if (eventType === "Team") {
+      events = JSON.parse(localStorage.getItem('teamEvents')) || [];
+      eventStorageKey = "teamEvents";
+    } else {
+      events = JSON.parse(localStorage.getItem('indEvents')) || [];
+      eventStorageKey = "indEvents";
+    }
 
     // Find the largest index in the events array
-    var largestIndex = 0;
-    events.forEach(function(event) {
-      if (event.index > largestIndex) {
-        largestIndex = event.index;
-      }
-    });
+    let largestIndex = 0;
+    if (events !== null) {
+      events.forEach(function(event) {
+        if (event.index > largestIndex) {
+          largestIndex = event.index;
+        }
+      });
+    }
 
-    // Sets the new index
+    // Add 1 to the largest index to get the new index
     var index = largestIndex + 1;
 
     // Create a new event object
@@ -94,27 +135,21 @@ $(document).ready(function() {
     };
 
     // Push to local storage
-    if (localStorage.getItem('events') == undefined) {
-      localStorage.setItem('events', "[]");
-      events.push(newEvent)
-      localStorage.setItem('events', JSON.stringify(events));
-      location.reload();
-    } else {
-      events.push(newEvent)
-      localStorage.setItem('events', JSON.stringify(events));
-      location.reload();
-    }
+    events.push(newEvent)
+    localStorage.setItem(eventStorageKey, JSON.stringify(events));
+    location.reload();
   });
 
   // ~~~ Edit Event ~~~
   // Edit button click event handler
-  $(".edit-btn").click(function() {
+  $(document).on("click", ".edit-btn", function() {
     $(".edit-event-popup-container").show();
     // Get the index of the event to edit from the data-index attribute of the clicked button
     editIndex = $(this).attr("data-index");
     console.log(editIndex);
     // Get the event data from local storage
-    var events = JSON.parse(localStorage.getItem('events'));
+    var eventType = $(this).closest(".events").hasClass("team") ? "Team" : "Individual";
+    var events = eventType === "Team" ? JSON.parse(localStorage.getItem('teamEvents')) : JSON.parse(localStorage.getItem('indEvents'));
     var event = events.find(function(item) {
       return item.index === parseInt(editIndex);
     });
@@ -134,7 +169,8 @@ $(document).ready(function() {
     var eventName = $(".edit-event-name").val();
     var startTime = $(".edit-event-time").val();
     // Get the events from local storage
-    var events = JSON.parse(localStorage.getItem('events'));
+    var eventType = $(".edit-event-type").text();
+    var events = eventType === "Team" ? JSON.parse(localStorage.getItem('teamEvents')) : JSON.parse(localStorage.getItem('indEvents'));
     // Find the event in the events array with the matching index value
     var eventIndex = events.findIndex(function(item) {
       return item.index === parseInt(editIndex);
@@ -143,24 +179,37 @@ $(document).ready(function() {
     events[eventIndex].name = eventName;
     events[eventIndex].startTime = startTime;
     // Update the events array in local storage
-    localStorage.setItem('events', JSON.stringify(events));
+    if (eventType === "Team") {
+      localStorage.setItem('teamEvents', JSON.stringify(events));
+    } else {
+      localStorage.setItem('indEvents', JSON.stringify(events));
+    }
     // Reload the page
     location.reload();
   });
-  
+
   // Delete button click event handler
-  $(".delete-btn").click(function() {
+  $('.delete-btn').click(function() {
     editIndex = parseInt(editIndex); 
     // Get the events from local storage
-    var events = JSON.parse(localStorage.getItem('events'));
+    var eventType = $(".edit-event-type").text();
+    var events = eventType === "Team" ? JSON.parse(localStorage.getItem('teamEvents')) : JSON.parse(localStorage.getItem('indEvents'));
     // Filter the events array to remove the event with the matching index value
     events = events.filter(function(item) {
       return item.index !== editIndex;
     });
     // Update the events array in local storage
-    localStorage.setItem('events', JSON.stringify(events));
+    if (eventType === "Team") {
+      localStorage.setItem('teamEvents', JSON.stringify(events));
+    } else {
+      localStorage.setItem('indEvents', JSON.stringify(events));
+    }
     // Reload the page
     location.reload();
   });
+
+  $('.cancel-btn').click(function() {
+    $('.edit-event-popup-container, .add-event-popup-container').hide()
+  })
 
 });

@@ -82,7 +82,7 @@ $(document).ready(function() {
     // Find the JSON object with the specified index
     var participant = null;
     $.each(indParticipants, function(i, p) {
-      if (p.index === index) {
+      if (p.index === editIndex) {
         participant = p;
         return false;
       }
@@ -91,12 +91,11 @@ $(document).ready(function() {
     $('.ind-edit-name input').val(participant.name)
     $('.ind-edit-events-title').text(`Events: ${participant.events.length}/${maxEvents}`)
     $('.ind-edit-events-list').empty()
-    
-    // Get the events array from local storage
-    var events = JSON.parse(localStorage.getItem("events"));
+
     // Find events with matching indexes and append their names to the events list
-    $.each(participant.events, function(i, eventIndex) {
-      var event = events.find(e => e.index === eventIndex);
+    var events = JSON.parse(localStorage.getItem("indEvents"));
+    $.each(participant.events, function(i, eventObj) {
+      var event = events.find(e => e.index === eventObj.eventIndex);
       if (event) {
         $('.ind-edit-events-list').append(`<p>${event.name} <span>${event.startTime}</span></p>`);
       }
@@ -133,14 +132,13 @@ $(document).ready(function() {
     location.reload();
   });
 
-  // todo - make it only accept individual events
   // Edit participant events - shows pop up and displays events
   $('.ind-edit-events-btn').click(function() {
     if (editIndex !== null) { // so it can't be opened without an edit index
       $(".modify-event-popup-container").show();
       $('.events-list').empty()
       // Get the events array from local storage
-      const events = JSON.parse(localStorage.getItem("events"));
+      const events = JSON.parse(localStorage.getItem("indEvents"));
       // Get the participant from local storage
       const indParticipants = JSON.parse(localStorage.getItem("indParticipants"));
       let participant = null;
@@ -162,18 +160,26 @@ $(document).ready(function() {
           // Add a checkbox to the div with the data-index attribute set to the event index
           const checkbox = $(`<input type="checkbox" data-index="${event.index}">`);
           // Check the checkbox if the participant is already participating in the event
-          if (participant.events.indexOf(event.index) !== -1) {
+          const eventIndex = participant.events.findIndex(e => e.eventIndex === event.index);
+          if (eventIndex !== -1) {
             checkbox.prop('checked', true);
           }
           // Count the number of selected checkboxes
           checkbox.on('change', function() {
             if (this.checked) {
               selectedCount++;
+              // Add the event to the participant's list of events if it is checked
+              participant.events.push({eventIndex: event.index});
             } else {
               selectedCount--;
+              // Remove the event from the participant's list of events if it is unchecked
+              const eventIndex = participant.events.findIndex(e => e.eventIndex === event.index);
+              if (eventIndex !== -1) {
+                participant.events.splice(eventIndex, 1);
+              }
             }
             if (selectedCount > maxEvents) {
-              $('.confirm-btn').text(`Too many events ${selectedCount}/${maxEvents}`).prop('disabled', true);
+              $('.confirm-btn').text(`Too many events ${selectedCount}/${maxEvents}`).css('color', 'red').prop('disabled', true);
             } else {
               $('.confirm-btn').text(`Confirm ${selectedCount}/${maxEvents}`).prop('disabled', false);
             }
@@ -190,6 +196,7 @@ $(document).ready(function() {
       } else {
         $('.confirm-btn').text(`Confirm ${selectedCount}/${maxEvents}`).prop('disabled', false);
       }
+      
     };
   });
 
@@ -201,19 +208,50 @@ $(document).ready(function() {
     checkedBoxes.each(function() {
       checkedIndices.push($(this).data('index'));
     });
-  
+
+    // Get the events array from local storage
+    var events = JSON.parse(localStorage.getItem('indEvents'));
+
+    // Update the participants array of the selected events
+    for (var i = 0; i < events.length; i++) {
+      var eventIndex = events[i].index;
+      var eventParticipants = events[i].participants;
+
+      // Remove the participant from the event if it's unchecked
+      if (!checkedIndices.includes(eventIndex) && eventParticipants.includes(editIndex)) {
+        eventParticipants.splice(eventParticipants.indexOf(editIndex), 1);
+      }
+
+      // Add the participant to the event if it's checked and not already there
+      else if (checkedIndices.includes(eventIndex) && !eventParticipants.includes(editIndex)) {
+        eventParticipants.push(editIndex);
+      }
+    }
+
+    // Save the updated events array to local storage
+    localStorage.setItem('indEvents', JSON.stringify(events));
+
     // Get the participants array from local storage
     var participants = JSON.parse(localStorage.getItem('indParticipants'));
-  
+
     // Find the participant with the editIndex and update its events array
     for (var i = 0; i < participants.length; i++) {
       if (participants[i].index === editIndex) {
-        participants[i].events = checkedIndices;
+        var events = [];
+        $.each(checkedIndices, function(index, eventIndex) {
+          events.push({
+            eventIndex: eventIndex,
+            userScore: 0
+          });
+        });
+        participants[i].events = events;
         break;
       }
     }
+
     // Save the updated participants array to local storage
     localStorage.setItem('indParticipants', JSON.stringify(participants));
+
     // Reload the page
     location.reload();
   });
@@ -225,8 +263,6 @@ $(document).ready(function() {
   $(".cancel-btn").click(function() {
     $(".modify-event-popup-container").hide();
   });
-
-
 });
 
 
@@ -241,5 +277,5 @@ $(document).ready(function() {
 
 // userEvents = {
 //   eventIndex: eventIndex,
-//   userScore: userScore
+//   userScore: 0
 // }

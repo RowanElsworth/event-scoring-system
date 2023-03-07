@@ -16,8 +16,51 @@
     <div class="square square2"></div>
     <div class="square square3"></div>
     <div class="square square4"></div>
-    <!-- main -->
+    <!-- header -->
     <header id="header"></header>
+    <!-- main -->
+    <main>
+      <section class="content__box events ind-events">
+        .
+        <p class="event-title">Individual Events</p>
+        <!-- header -->
+        <div class="header">
+          <p class="header-title">Name</p>
+          <p class="header-title">Start</p>
+        </div>
+        <!-- table -->
+        <div class="ind-table-container">
+          
+        </div>
+      </section>
+      <section class="content__box events team-events">
+        <p class="event-title">Team Events</p>
+        <!-- header -->
+        <div class="header">
+          <p class="header-title">Name</p>
+          <p class="header-title">Start</p>
+        </div>
+        <!-- table -->
+        <div class="team-table-container">
+          
+        </div>
+      </section>
+      <section class="add-score-popup-container">
+        <div class="add-score-popup">
+          <button class="close-btn">X</button>
+          <h2>Modify Scores</h2>
+          <h2 class="event-info"></h2>
+          <label for="first">1st Place:</label>
+          <select id="first" name="first"></select>
+          <label for="second">2nd Place:</label>
+          <select id="second" name="second"></select>
+          <label for="third">3rd Place:</label>
+          <select id="third" name="third"></select>
+          <button class="submit-btn">Submit Scores</button>
+          <button class="cancel-btn">Cancel</button>
+        </div>
+      </section>      
+    </main>
   </section>
   <script src="scoring.js"></script>
 </body>

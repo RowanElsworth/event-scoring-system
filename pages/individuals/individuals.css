@@ -16,6 +16,11 @@
 }
 
 /* part select/add section */
+
+.ind-list {
+  overflow: auto;
+}
+
 .row {
   width: 100%;
 }
@@ -164,4 +169,8 @@
 
 .cancel-btn {
   flex: 1;
+}
+
+.del-btn, .edit-btn {
+  user-select: none;
 }

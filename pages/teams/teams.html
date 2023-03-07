@@ -16,8 +16,47 @@
     <div class="square square2"></div>
     <div class="square square3"></div>
     <div class="square square4"></div>
-    <!-- main -->
+    <!-- header -->
     <header id="header"></header>
+    <!-- main -->
+    <main>
+      <!-- list of individual participants -->
+      <section class="content__box team-list-sect">
+        <div class="team-list">
+          
+        </div>
+        <button class="add-part-btn">Add Team</button>
+      </section>
+      <!-- edit individual area -->
+      <section class="content__box team-edit">
+        <div class="team-edit-name">
+          <input></input>
+        </div>
+        <div class="team-edit-events-container">
+          <div class="team-edit-events">
+            <p class="team-edit-events-title"></p>
+            <div class="team-edit-events-list">
+            </div>
+            <button class="team-edit-events-btn">Modify Events</button>
+          </div>
+        </div>
+        <button class="confirm">Confirm Changes</button>
+      </section>
+      <section class="modify-event-popup-container">
+        <div class="modify-event-popup">
+          <button class="close-btn">X</button>
+          <p>Modify Events</p>
+          <div class="events-list">
+            
+          </div>
+          <div class="btn-container">
+            <button class="confirm-btn">Confirm</button>
+            <button class="cancel-btn">Cancel</button>
+          </div>
+
+        </div>
+      </section>
+    </main>
   </section>
   <script src="teams.js"></script>
 </body>

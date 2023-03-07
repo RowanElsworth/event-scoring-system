@@ -9,7 +9,6 @@
   </ul>
 </nav>
 <div class="hdr-content">
-  <button class="reset-local">Reset local storage</button>
   <p class="hdr-next-event"></p>
   <p class="hdr-time">00:00:00</p>
   <div class="hdr-username-dropdown">
@@ -35,6 +34,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-shadow: 0 4px 8px 6px rgba(0, 0, 0, 0.4);
   }
 
   nav ul {
@@ -114,29 +114,28 @@
   $(document).ready(function() {
     updateNextEvent();
 
-    $('.reset-local').click(function() {
-      localStorage.setItem('events', "[]");
-      location.reload();
-    })
-
     // updates nav with current page
     var currentPagePath = window.location.pathname;
     $('nav ul li a[href="' + currentPagePath + '"]').addClass('current');
 
     function updateNextEvent() {
-      let events = JSON.parse(localStorage.getItem('events'))
-      var currentTime = new Date();
-      var nextEvent = null;
-      var nextEventTime = null;
-      
-      if (events && events.length > 0) { // Check if there is items in local storage
+      let indEvents = JSON.parse(localStorage.getItem('indEvents')) || [];
+      let teamEvents = JSON.parse(localStorage.getItem('teamEvents')) || [];
+      let currentTime = new Date();
+      let nextEvent = null;
+      let nextEventTime = null;
+
+      // Combine individual and team events into one array
+      let events = [...indEvents, ...teamEvents];
+
+      if (events && events.length > 0) { // Check if there are any events
         // Loop through all events
-        $.each(events, function(index, event) {
-          var eventTime = new Date();
-          var timeParts = event.startTime.split(':');
+        events.forEach(event => {
+          let eventTime = new Date();
+          let timeParts = event.startTime.split(':');
           eventTime.setHours(timeParts[0]);
           eventTime.setMinutes(timeParts[1]);
-          
+
           // If event is in the future and sooner than the current next event, set it as the new next event
           if (eventTime > currentTime && (nextEventTime == null || eventTime < nextEventTime)) {
             nextEvent = event;
@@ -144,8 +143,8 @@
           }
         });
       }
-      
-      // Display the name of the next event 
+
+      // Display the name of the next event
       $('.hdr-next-event').html(`Next event: ${nextEvent ? `<span>${nextEvent.type}</span> ${nextEvent.name} @ ${nextEvent.startTime}` : 'No upcoming events'}`);
     };
 
