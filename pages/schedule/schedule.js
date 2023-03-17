@@ -46,6 +46,7 @@ $(document).ready(function() {
       // Empty the event-participants div before appending the participants of the next event
       $('.event-participants').empty();
       // Append participants of next event one by one to the upcoming-events-list
+      $('.event-participants').html(`<p>Participants:</p>`);
       $.each(nextEvent.participants, function(index, participantIndex) {
         let participantName = '';
         if (nextEvent.type === 'Individual') {
@@ -61,7 +62,10 @@ $(document).ready(function() {
         }
         $('.event-participants').append(`<p>${participantName}</p>`);
       });
+    } else {
+      $('.event-name').html(`<span>No upcoming events`);
     }
+    
   };
 
 
@@ -117,10 +121,15 @@ $(document).ready(function() {
     $('.upcoming-events-list').empty();
   
     // Loop through all upcoming events and add them to the event list
-    $.each(upcomingEvents, function(index, event) {
-      let eventHtml = `<p><span>${event.type}</span> ${event.name} <span>${event.startTime}</span></p>`;
-      $('.upcoming-events-list').append(eventHtml);
-    });
+    if (upcomingEvents) {
+      $.each(upcomingEvents, function(index, event) {
+        let eventHtml = `<p><span>${event.type}</span> ${event.name} <span>${event.startTime}</span></p>`;
+        $('.upcoming-events-list').append(eventHtml);
+      });
+    } else {
+      $('.upcoming-events-list').html(`<p>No upcoming events</p>`);
+    }
+
   };
   
   // Call the updateUpcomingEvents function every minute

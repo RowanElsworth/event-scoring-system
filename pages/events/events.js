@@ -131,7 +131,8 @@ $(document).ready(function() {
       type: eventType,
       name: eventName,
       startTime: startTime,
-      participants: []
+      participants: [],
+      scores: []
     };
 
     // Push to local storage

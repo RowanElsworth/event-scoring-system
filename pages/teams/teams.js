@@ -160,7 +160,7 @@ $(document).ready(function() {
           // Add a checkbox to the div with the data-index attribute set to the event index
           const checkbox = $(`<input type="checkbox" data-index="${event.index}">`);
           // Check the checkbox if the participant is already participating in the event
-          const eventIndex = participant.events.findIndex(e => e.eventIndex === event.index);
+          const eventIndex = participant.events.findIndex(e => e.eventIndex === event.index.toString());
           if (eventIndex !== -1) {
             checkbox.prop('checked', true);
           }
@@ -189,6 +189,7 @@ $(document).ready(function() {
           $(".events-list").append(eventDiv);
         }
       });
+
       // Initialize the button text based on the number of pre-selected events
       selectedCount = $('.events-list input:checked').length;
       if (selectedCount > maxEvents) {
