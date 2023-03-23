@@ -15,11 +15,35 @@ $(document).ready(function() {
     // redirect to login page if not authenticated
     window.location.href = '/pages/auth/auth.html';
   }
-  
+
+  function editBtn() {
+    // Get the indParticipants array from local storage
+    var indParticipants = JSON.parse(localStorage.getItem("indParticipants"));
+    // Find the object with the specified index
+    var participant = null;
+    $.each(indParticipants, function(i, p) {
+      if (p.indexID === editIndex) {
+        participant = p;
+        return false;
+      }
+    });
+    // Use the participant variable as needed
+    $('.ind-edit-name input').val(participant.name)
+    $('.ind-edit-events-title').text(`Events: ${participant.events.length}/${maxEvents}`)
+    $('.ind-edit-events-list').empty()
+
+    // Find events with matching indexes and append their names to the events list
+    var events = JSON.parse(localStorage.getItem("indEvents"));
+    $.each(participant.events, function(i, eventIndex) {
+      var event = events.find(e => e.indexID === eventIndex);
+      if (event) {
+        $('.ind-edit-events-list').append(`<p>${event.name} <span>${event.startTime}</span></p>`);
+      }
+    });
+  }
 
   // Read the indParticipants array from local storage
   var indParticipants = JSON.parse(localStorage.getItem('indParticipants')) || [];
-  
   // Sort the array alphabetically by name
   indParticipants.sort(function(a, b) {
     return a.name.localeCompare(b.name);
@@ -33,8 +57,8 @@ $(document).ready(function() {
                       <p>${participant.name}</p>
                     </div>
                     <div class="btns">
-                      <button data-index="${participant.index}" class="edit-btn">Edit</button>
-                      <button data-index="${participant.index}" class="del-btn">Delete</button>
+                      <button data-index="${participant.indexID}" class="edit-btn">Edit</button>
+                      <button data-index="${participant.indexID}" class="del-btn">Delete</button>
                     </div>
                   </div>
                 </div>`;
@@ -43,7 +67,7 @@ $(document).ready(function() {
   });
 
   // add participant to the local storage
-  $('.add-part-btn').on('click', function() {
+  $('.add-participant-btn').on('click', function() {
     // Get the values from the input fields
     var indName = "New Participant"
     
@@ -53,14 +77,14 @@ $(document).ready(function() {
     // Find the highest index value currently in the array
     var maxIndex = 0;
     for (var i = 0; i < indParticipants.length; i++) {
-      if (indParticipants[i].index > maxIndex) {
-        maxIndex = indParticipants[i].index;
+      if (indParticipants[i].indexID > maxIndex) {
+        maxIndex = indParticipants[i].indexID;
       }
     }
     
     // Add the new ind with the next index
     indParticipants.push({
-      index: maxIndex + 1,
+      indexID: maxIndex + 1,
       name: indName,
       events: []
     });
@@ -77,29 +101,7 @@ $(document).ready(function() {
     // Get the index from the data-index attribute
     var index = $(this).data("index");
     editIndex = index;
-    // Get the indParticipants array from local storage
-    var indParticipants = JSON.parse(localStorage.getItem("indParticipants"));
-    // Find the object with the specified index
-    var participant = null;
-    $.each(indParticipants, function(i, p) {
-      if (p.index === editIndex) {
-        participant = p;
-        return false;
-      }
-    });
-    // Use the participant variable as needed
-    $('.ind-edit-name input').val(participant.name)
-    $('.ind-edit-events-title').text(`Events: ${participant.events.length}/${maxEvents}`)
-    $('.ind-edit-events-list').empty()
-
-    // Find events with matching indexes and append their names to the events list
-    var events = JSON.parse(localStorage.getItem("indEvents"));
-    $.each(participant.events, function(i, eventIndex) {
-      var event = events.find(e => e.index === eventIndex);
-      if (event) {
-        $('.ind-edit-events-list').append(`<p>${event.name} <span>${event.startTime}</span></p>`);
-      }
-    });
+    editBtn()
   });
 
   // Removes participant
@@ -107,22 +109,21 @@ $(document).ready(function() {
     var index = $(this).attr('data-index');
     var indParticipants = JSON.parse(localStorage.getItem('indParticipants'));
     indParticipants = indParticipants.filter(function(ind) {
-      return ind.index != index;
+      return ind.indexID != index;
     });
     localStorage.setItem('indParticipants', JSON.stringify(indParticipants));
     // Reload the page
     location.reload();
   });
-  
-  // Edit participant
+
+  // Edit participant name
   $('.confirm').click(function() {
     // Get the indParticipants array from local storage
     var indParticipants = JSON.parse(localStorage.getItem("indParticipants"));
     // Find the JSON object with the specified index and update it
     $.each(indParticipants, function(i, p) {
-      if (p.index === editIndex) {
+      if (p.indexID === editIndex) {
         p.name = $('.ind-edit-name input').val();
-        p.events = [];
         return false;
       }
     });
@@ -134,125 +135,102 @@ $(document).ready(function() {
 
   // Edit participant events - shows pop up and displays events
   $('.ind-edit-events-btn').click(function() {
-    if (editIndex !== null) { // so it can't be opened without an edit index
-      $(".modify-event-popup-container").show();
-      $('.events-list').empty()
-      // Get the events array from local storage
-      const events = JSON.parse(localStorage.getItem("indEvents"));
-      // Get the participant from local storage
-      const indParticipants = JSON.parse(localStorage.getItem("indParticipants"));
-      let participant = null;
-      $.each(indParticipants, function(i, p) {
-        if (p.index === editIndex) {
-          participant = p;
-          return false;
-        }
-      });
-      // Loop through the events array and append each event with type "Individual" to the events list
-      let selectedCount = 0;
-      $.each(events, function(index, event) {
-        if (event.type === "Individual") {
-          // Create a new div to hold the event information
-          const eventDiv = $(`<div>`);
-          // Add the event name and start time to the div
-          eventDiv.append(`<p>${event.name}</p>`);
-          eventDiv.append(`<p>${event.startTime}</p>`);
-          // Add a checkbox to the div with the data-index attribute set to the event index
-          const checkbox = $(`<input type="checkbox" data-index="${event.index}">`);
-          // Check the checkbox if the participant is already participating in the event
-          const eventIndex = participant.events.findIndex(e => e.eventIndex === event.index);
-          if (eventIndex !== -1) {
-            checkbox.prop('checked', true);
-          }
-          // Count the number of selected checkboxes
-          checkbox.on('change', function() {
-            if (this.checked) {
-              selectedCount++;
-              // Add the event to the participant's list of events if it is checked
-              participant.events.push({eventIndex: event.index});
-            } else {
-              selectedCount--;
-              // Remove the event from the participant's list of events if it is unchecked
-              const eventIndex = participant.events.findIndex(e => e.eventIndex === event.index);
-              if (eventIndex !== -1) {
-                participant.events.splice(eventIndex, 1);
-              }
-            }
-            if (selectedCount > maxEvents) {
-              $('.confirm-btn').text(`Too many events ${selectedCount}/${maxEvents}`).css('color', 'red').prop('disabled', true);
-            } else {
-              $('.confirm-btn').text(`Confirm ${selectedCount}/${maxEvents}`).css('color', 'black').prop('disabled', false);
-            }
-          });
-          eventDiv.append(checkbox);
-          // Append the event div to the events list
-          $(".events-list").append(eventDiv);
-        }
-      });
-      // Initialize the button text based on the number of pre-selected events
-      selectedCount = $('.events-list input:checked').length;
-      if (selectedCount > maxEvents) {
-        $('.confirm-btn').text(`Too many events ${selectedCount}/${maxEvents}`).css('color', 'red').prop('disabled', true);
-      } else {
-        $('.confirm-btn').text(`Confirm ${selectedCount}/${maxEvents}`).prop('disabled', false);
-      }
-      
-    };
-  });
+    $('.events-list').empty();
+    // get events and participants from local storage
+    var indEvents = JSON.parse(localStorage.getItem('indEvents')) || [];
 
-  // Pushes events to participants events
-  $('.confirm-btn').click(function() {
-    // Get the checked checkboxes and their data-index values
-    var checkedBoxes = $('.events-list input:checked');
-    var checkedIndices = [];
-    checkedBoxes.each(function() {
-      checkedIndices.push($(this).data('index'));
+    var tickedBoxesCount = 0; // initialize the counter variable
+
+    $.each(indEvents, function(index, event) {
+      var eventDiv = $('<div>');
+      eventDiv.append('<div>' + event.name + '</div>');
+      eventDiv.append('<div>' + event.startTime + '</div>');
+      var checkbox = $('<input type="checkbox">');
+      checkbox.attr('data-indexID', event.indexID);
+
+      // checks if the editIndex (the participant being edited) is in the participants array
+      // of the events and checks the box if they are
+      if (event.participants.indexOf(editIndex) !== -1) {
+        checkbox.prop('checked', true);
+        tickedBoxesCount++; // increment the counter variable
+      }
+
+      $('.confirm-btn').text(`Confirm ${tickedBoxesCount} / ${maxEvents}`)
+
+      checkbox.change(function() {
+        if ($(this).is(':checked')) {
+          tickedBoxesCount++;
+        } else {
+          tickedBoxesCount--;
+        }
+        console.log(tickedBoxesCount)
+        $('.confirm-btn').text(`Confirm ${tickedBoxesCount} / ${maxEvents}`)
+        if (tickedBoxesCount > maxEvents) {
+          $('.confirm-btn').css('color', 'red').prop('disabled', true)
+        } else {
+          $('.confirm-btn').css('color', '').prop('disabled', false)
+        }
+      });
+
+      $('.events-list').append(eventDiv);
+      eventDiv.append(checkbox); // append the checkbox to the event div
     });
 
-    // Get the events array from local storage
-    var events = JSON.parse(localStorage.getItem('indEvents'));
+    // display the ticked boxes count
+    console.log(tickedBoxesCount)
 
-    // Update the participants array of the selected events
-    for (var i = 0; i < events.length; i++) {
-      var eventIndex = events[i].index;
-      var eventParticipants = events[i].participants;
-
-      // Remove the participant from the event if it's unchecked
-      if (!checkedIndices.includes(eventIndex) && eventParticipants.includes(editIndex)) {
-        eventParticipants.splice(eventParticipants.indexOf(editIndex), 1);
-      }
-
-      // Add the participant to the event if it's checked and not already there
-      else if (checkedIndices.includes(eventIndex) && !eventParticipants.includes(editIndex)) {
-        eventParticipants.push(editIndex);
-      }
-    }
-
-    // Save the updated events array to local storage
-    localStorage.setItem('indEvents', JSON.stringify(events));
-
-    // Get the participants array from local storage
-    var participants = JSON.parse(localStorage.getItem('indParticipants'));
-
-    // Find the participant with the editIndex and update its events array
-    for (var i = 0; i < participants.length; i++) {
-      if (participants[i].index === editIndex) {
-        var events = [];
-        $.each(checkedIndices, function(index, eventIndex) {
-          events.push(eventIndex);
-        });
-        participants[i].events = events;
-        break;
-      }
-    }
-
-    // Save the updated participants array to local storage
-    localStorage.setItem('indParticipants', JSON.stringify(participants));
-
-    // Reload the page
-    location.reload();
+    $('.modify-event-popup-container').show();
   });
-  
+
+  // updates the participants's "events" arrays and events's "participant" arrays
+  $(".confirm-btn").click(function() {
+    var indParticipants = JSON.parse(localStorage.getItem('indParticipants')) || [];
+    var indEvents = JSON.parse(localStorage.getItem('indEvents')) || [];
+
+    // Get the array of event indexes from the checkboxes
+    var eventIndexes = [];
+    $('.events-list input[type="checkbox"]:checked').each(function() {
+      eventIndexes.push(parseInt($(this).attr('data-indexid')));
+    });
+
+    console.log(eventIndexes)
+
+    // Find the participant object with the matching indexID
+    var participant = indParticipants.find(function(p) {
+      return p.indexID === editIndex;
+    });
+
+    console.log(participant)
+
+    // Update the participant's "events" array
+    participant.events = eventIndexes;
+
+    console.log(participant)
+
+    // Update the "participants" array of the corresponding event objects
+    $.each(indEvents, function(index, event) {
+      if (eventIndexes.indexOf(event.indexID) !== -1) {
+        if (event.participants.indexOf(editIndex) === -1) {
+          event.participants.push(editIndex);
+        }
+      } else {
+        event.participants = event.participants.filter(function(p) {
+          return p !== editIndex;
+        });
+      }
+    });
+
+    console.log(indEvents)
+
+    // Save the updated data to local storage
+    localStorage.setItem('indParticipants', JSON.stringify(indParticipants));
+    localStorage.setItem('indEvents', JSON.stringify(indEvents));
+
+    // Reset the right panel and hide the popup
+    editBtn();
+    $(".modify-event-popup-container").hide();
+  });
+
   $(".close-btn").click(function() {
     $(".modify-event-popup-container").hide();
   });

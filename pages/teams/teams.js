@@ -16,6 +16,31 @@ $(document).ready(function() {
     window.location.href = '/pages/auth/auth.html';
   }
   
+  function editBtn() {
+    // Get the teamParticipants array from local storage
+    var teamParticipants = JSON.parse(localStorage.getItem("teamParticipants"));
+    // Find the object with the specified index
+    var participant = null;
+    $.each(teamParticipants, function(i, p) {
+      if (p.index === editIndex) {
+        participant = p;
+        return false;
+      }
+    });
+    // Use the participant variable as needed
+    $('.team-edit-name input').val(participant.name)
+    $('.team-edit-events-title').text(`Events: ${participant.events.length}/${maxEvents}`)
+    $('.team-edit-events-list').empty()
+
+    // Find events with matching indexes and append their names to the events list
+    var events = JSON.parse(localStorage.getItem("indEvents"));
+    $.each(participant.events, function(i, eventIndex) {
+      var event = events.find(e => e.index === eventIndex);
+      if (event) {
+        $('.ind-edit-events-list').append(`<p>${event.name} <span>${event.startTime}</span></p>`);
+      }
+    });
+  }
 
   // Read the teamParticipants array from local storage
   var teamParticipants = JSON.parse(localStorage.getItem('teamParticipants')) || [];
@@ -77,29 +102,7 @@ $(document).ready(function() {
     // Get the index from the data-index attribute
     var index = $(this).data("index");
     editIndex = index;
-    // Get the teamParticipants array from local storage
-    var teamParticipants = JSON.parse(localStorage.getItem("teamParticipants"));
-    // Find the object with the specified index
-    var participant = null;
-    $.each(teamParticipants, function(i, p) {
-      if (p.index === editIndex) {
-        participant = p;
-        return false;
-      }
-    });
-    // Use the participant variable as needed
-    $('.team-edit-name input').val(participant.name)
-    $('.team-edit-events-title').text(`Events: ${participant.events.length}/${maxEvents}`)
-    $('.team-edit-events-list').empty()
-
-    // Find events with matching indexes and append their names to the events list
-    var events = JSON.parse(localStorage.getItem("teamEvents"));
-    $.each(participant.events, function(i, eventIndex) {
-      var event = events.find(e => e.index === eventIndex);
-      if (event) {
-        $('.team-edit-events-list').append(`<p>${event.name} <span>${event.startTime}</span></p>`);
-      }
-    });
+    editBtn()
   });
 
   // Removes participant
@@ -133,72 +136,35 @@ $(document).ready(function() {
   });
 
   // Edit participant events - shows pop up and displays events
-  $('.team-edit-events-btn').click(function() {
-    if (editIndex !== null) { // so it can't be opened without an edit index
-      $(".modify-event-popup-container").show();
-      $('.events-list').empty()
-      // Get the events array from local storage
-      const events = JSON.parse(localStorage.getItem("teamEvents"));
-      // Get the participant from local storage
-      const teamParticipants = JSON.parse(localStorage.getItem("teamParticipants"));
-      let participant = null;
-      $.each(teamParticipants, function(i, p) {
-        if (p.index === editIndex) {
-          participant = p;
-          return false;
-        }
-      });
-      // Loop through the events array and append each event with type "Team" to the events list
-      let selectedCount = 0;
-      $.each(events, function(index, event) {
-        if (event.type === "Team") {
-          // Create a new div to hold the event information
-          const eventDiv = $(`<div>`);
-          // Add the event name and start time to the div
-          eventDiv.append(`<p>${event.name}</p>`);
-          eventDiv.append(`<p>${event.startTime}</p>`);
-          // Add a checkbox to the div with the data-index attribute set to the event index
-          const checkbox = $(`<input type="checkbox" data-index="${event.index}">`);
-          // Check the checkbox if the participant is already participating in the event
-          const eventIndex = participant.events.findIndex(e => e.eventIndex === event.index.toString());
-          if (eventIndex !== -1) {
-            checkbox.prop('checked', true);
+  $('.team-edit-events-btn').on('click', function() {
+    var teamEvents = JSON.parse(localStorage.getItem('teamEvents'));
+    var participant = JSON.parse(localStorage.getItem('teamParticipants')).find(function(p) {
+      return p.index === editIndex;
+    });
+  
+    $('.events-list').empty(); // Clear the list before appending
+  
+    teamEvents.forEach(function(event) {
+      var isChecked = false;
+      if (participant) {
+        participant.events.forEach(function(pEvent) {
+          if (pEvent === event.index) {
+            isChecked = true;
+            return false; // Exit the forEach loop early
           }
-          // Count the number of selected checkboxes
-          checkbox.on('change', function() {
-            if (this.checked) {
-              selectedCount++;
-              // Add the event to the participant's list of events if it is checked
-              participant.events.push({eventIndex: event.index});
-            } else {
-              selectedCount--;
-              // Remove the event from the participant's list of events if it is unchecked
-              const eventIndex = participant.events.findIndex(e => e.eventIndex === event.index);
-              if (eventIndex !== -1) {
-                participant.events.splice(eventIndex, 1);
-              }
-            }
-            if (selectedCount > maxEvents) {
-              $('.confirm-btn').text(`Too many events ${selectedCount}/${maxEvents}`).css('color', 'red').prop('disabled', true);
-            } else {
-              $('.confirm-btn').text(`Confirm ${selectedCount}/${maxEvents}`).css('color', 'black').prop('disabled', false);
-            }
-          });
-          eventDiv.append(checkbox);
-          // Append the event div to the events list
-          $(".events-list").append(eventDiv);
-        }
-      });
-
-      // Initialize the button text based on the number of pre-selected events
-      selectedCount = $('.events-list input:checked').length;
-      if (selectedCount > maxEvents) {
-        $('.confirm-btn').text(`Too many events ${selectedCount}/${maxEvents}`).css('color', 'red').prop('disabled', true);
-      } else {
-        $('.confirm-btn').text(`Confirm ${selectedCount}/${maxEvents}`).prop('disabled', false);
+        });
       }
-      
-    };
+      var checkbox = $('<input>').attr({
+        type: 'checkbox',
+        'data-index': event.index,
+        checked: isChecked
+      });
+      var eventName = $('<p>').text(event.name);
+      var eventTime = $('<p>').text(event.startTime);
+      var eventContainer = $('<div>').append(eventName, eventTime, checkbox);
+      $('.events-list').append(eventContainer);
+    });
+    $(".modify-event-popup-container").show();
   });
 
   // Pushes events to participants events
@@ -240,7 +206,10 @@ $(document).ready(function() {
       if (participants[i].index === editIndex) {
         var events = [];
         $.each(checkedIndices, function(index, eventIndex) {
-          events.push(eventIndex);
+          events.push({
+            eventIndex: eventIndex,
+            userScore: 0
+          });
         });
         participants[i].events = events;
         break;
