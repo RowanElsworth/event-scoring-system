@@ -5,14 +5,8 @@ $(document).ready(function() {
 
   // load header
   $(function(){
-    $("#header").load("../../partials/header.html"); 
+    $("#header").load("/partials/header.html"); 
   });
-
-  // authentication check
-  if (!localStorage.getItem('user')) {
-    // redirect to login page if not authenticated
-    window.location.href = '/pages/auth/auth.html';
-  }
 
   // Out puts the events in alphabetical order to the screen
   let indEvents = JSON.parse(localStorage.getItem('indEvents')) || [];
@@ -43,7 +37,7 @@ $(document).ready(function() {
     var colRight = $("<div>").addClass("col-right");
     var startControls = $("<div>").addClass("event-start-controls");
     startControls.append($("<p>").text(event.startTime));
-    startControls.append($("<button>").addClass("edit-btn").text("Edit").attr("data-index", event.index));
+    startControls.append($("<button>").addClass("edit-btn").text("Edit").attr("data-index", event.indexID));
     colRight.append(startControls);
     colsDiv.append(colRight);
 
@@ -73,7 +67,7 @@ $(document).ready(function() {
     var colRight = $("<div>").addClass("col-right");
     var startControls = $("<div>").addClass("event-start-controls");
     startControls.append($("<p>").text(event.startTime));
-    startControls.append($("<button>").addClass("edit-btn").text("Edit").attr("data-index", event.index));
+    startControls.append($("<button>").addClass("edit-btn").text("Edit").attr("data-index", event.indexID));
     colRight.append(startControls);
     colsDiv.append(colRight);
 
@@ -116,8 +110,8 @@ $(document).ready(function() {
     let largestIndex = 0;
     if (events !== null) {
       events.forEach(function(event) {
-        if (event.index > largestIndex) {
-          largestIndex = event.index;
+        if (event.indexID > largestIndex) {
+          largestIndex = event.indexID;
         }
       });
     }
@@ -127,7 +121,7 @@ $(document).ready(function() {
 
     // Create a new event object
     var newEvent = {
-      index: index,
+      indexID: index,
       type: eventType,
       name: eventName,
       startTime: startTime,
@@ -152,7 +146,7 @@ $(document).ready(function() {
     var eventType = $(this).closest(".events").hasClass("team") ? "Team" : "Individual";
     var events = eventType === "Team" ? JSON.parse(localStorage.getItem('teamEvents')) : JSON.parse(localStorage.getItem('indEvents'));
     var event = events.find(function(item) {
-      return item.index === parseInt(editIndex);
+      return item.indexID === parseInt(editIndex);
     });
     // Set the values of the edit-event-popup fields to the event data
     $(".edit-event-type").text(event.type);
@@ -174,7 +168,7 @@ $(document).ready(function() {
     var events = eventType === "Team" ? JSON.parse(localStorage.getItem('teamEvents')) : JSON.parse(localStorage.getItem('indEvents'));
     // Find the event in the events array with the matching index value
     var eventIndex = events.findIndex(function(item) {
-      return item.index === parseInt(editIndex);
+      return item.indexID === parseInt(editIndex);
     });
     // Update the event data in the events array
     events[eventIndex].name = eventName;
@@ -197,7 +191,7 @@ $(document).ready(function() {
     var events = eventType === "Team" ? JSON.parse(localStorage.getItem('teamEvents')) : JSON.parse(localStorage.getItem('indEvents'));
     // Filter the events array to remove the event with the matching index value
     events = events.filter(function(item) {
-      return item.index !== editIndex;
+      return item.indexID !== editIndex;
     });
     // Update the events array in local storage
     if (eventType === "Team") {

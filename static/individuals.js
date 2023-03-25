@@ -7,15 +7,9 @@ $(document).ready(function() {
 
   // load header
   $(function(){
-    $("#header").load("../../partials/header.html"); 
+    $("#header").load("/partials/header.html"); 
   });
   
-  // authentication check
-  if (!localStorage.getItem('user')) {
-    // redirect to login page if not authenticated
-    window.location.href = '/pages/auth/auth.html';
-  }
-
   function editBtn() {
     // Get the indParticipants array from local storage
     var indParticipants = JSON.parse(localStorage.getItem("indParticipants"));

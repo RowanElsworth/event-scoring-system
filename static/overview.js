@@ -4,14 +4,8 @@ $(document).ready(function() {
 
   // load header
   $(function(){
-    $("#header").load("../../partials/header.html"); 
+    $("#header").load("/partials/header.html"); 
   });
-  
-  // authentication check
-  if (!localStorage.getItem('user')) {
-    // redirect to login page if not authenticated
-    window.location.href = '/pages/auth/auth.html';
-  }
   
   function updateNextEvent() {
     let indEvents = JSON.parse(localStorage.getItem('indEvents')) || [];
@@ -50,12 +44,12 @@ $(document).ready(function() {
       $.each(nextEvent.participants, function(index, participantIndex) {
         let participantName = '';
         if (nextEvent.type === 'Individual') {
-          let participant = indParticipants.find(p => p.index === participantIndex);
+          let participant = indParticipants.find(p => p.indexID === participantIndex);
           if (participant) {
             participantName = participant.name;
           }
         } else if (nextEvent.type === 'Team') {
-          let participant = teamParticipants.find(p => p.index === participantIndex);
+          let participant = teamParticipants.find(p => p.indexID === participantIndex);
           if (participant) {
             participantName = participant.name;
           }
@@ -92,7 +86,7 @@ $(document).ready(function() {
     });
   
     // Loop through all team events
-    $.each(teamEvents, function(index, event) {
+    $.each(teamEvents, function(ID, event) {
       let eventTime = new Date();
       let timeParts = event.startTime.split(':');
       eventTime.setHours(timeParts[0]);
@@ -135,5 +129,29 @@ $(document).ready(function() {
   // Call the updateUpcomingEvents function every minute
   setInterval(updateEventList, 60000);
     
+  // add the rankings
+  var indScores = JSON.parse(localStorage.getItem('indScores'));
+  var scoresList = $('.ind-scores');
+  
+  indScores.sort(function(a, b) {
+    return b.score - a.score;
+  });
+  
+  $.each(indScores, function(index, item) {
+    var score = $(`<p>${item.name}<span>${item.score}</span></p>`);
+    scoresList.append(score);
+  });
+  
+  var teamScores = JSON.parse(localStorage.getItem('teamScores'));
+  var scoresList = $('.team-scores');
+
+  teamScores.sort(function(a, b) {
+    return b.score - a.score;
+  });
+  
+  $.each(teamScores, function(index, item) {
+    var score = $(`<p>${item.name}<span>${item.score}</span></p>`);
+    scoresList.append(score);
+  });
 });
   

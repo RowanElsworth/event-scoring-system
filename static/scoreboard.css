@@ -1,0 +1,62 @@
+.ind-scores {
+  width: 45%;
+  height: 90%;
+}
+
+.team-scores {
+  width: 45%;
+  height: 90%;
+}
+
+.scores {
+  width: 45%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.scores h1 {
+  font-size: 4rem;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.headers-container {
+  display: flex;
+  position: relative;
+}
+
+.headers-container p {
+  font-size: 3.5rem;
+  flex: 1;
+}
+
+.headers-container::before {
+  position: absolute;
+  bottom: 0;
+  content: "";
+  width: 100%;
+  height: 3px;
+  background: black;
+}
+
+.ind-scores-list div, .team-scores-list div {
+  position: relative;
+  display: flex;
+}
+
+.ind-scores-list div p, .team-scores-list div p {
+  font-size: 3.5rem;
+  flex: 1;
+}
+
+.ind-scores-list div::before, .team-scores-list div::before {
+  position: absolute;
+  bottom: 0;
+  content: "";
+  width: 100%;
+  height: 3px;
+  background: black;
+}

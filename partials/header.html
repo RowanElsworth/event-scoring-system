@@ -1,11 +1,12 @@
 
 <nav>
   <ul>
-    <li><a href="/pages/schedule/schedule.html" class="nav-link">Schedule</a></li>
-    <li><a href="/pages/individuals/individuals.html" class="nav-link">Individuals</a></li>
-    <li><a href="/pages/teams/teams.html" class="nav-link">Teams</a></li>
-    <li><a href="/pages/events/events.html" class="nav-link">Events</a></li>
-    <li><a href="/pages/scoring/scoring.html" class="nav-link">Scoring</a></li>
+    <li><a href="/" class="nav-link">Overview</a></li>
+    <li><a href="/individuals" class="nav-link">Individuals</a></li>
+    <li><a href="/teams" class="nav-link">Teams</a></li>
+    <li><a href="/events" class="nav-link">Events</a></li>
+    <li><a href="/scoring" class="nav-link">Scoring</a></li>
+    <li><a href="/scoreboard" class="nav-link">Scoreboard</a></li>
   </ul>
 </nav>
 <div class="hdr-content">
@@ -164,14 +165,14 @@
     }, 1000);
 
     // sets the username
-    var user = JSON.parse(localStorage.getItem('user'));
+    var user = JSON.parse(localStorage.getItem('user')) || "unknown";
     var username = user.username;
     $('.hdr-username').text(`${username} ↓`)
 
     // logs out user
     $('.logout-btn').click(function() {
       localStorage.removeItem('user'); // remove user information from local storage
-      window.location.href = '/pages/auth/auth.html'; // redirect to login page
+      window.location.href = '/'; // redirect to login page
     });
   });
 </script>

@@ -1,7 +1,7 @@
 
 .next-event {
-  width: 30%;
   height: 90%;
+  flex: 1;
 }
 
 .next-event p {
@@ -22,11 +22,29 @@
 }
 
 .upcoming-events {
-  width: 50%;
   height: 90%;
+  flex: 1.75;
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+main {
+  display: flex;
+  gap: 15px;
+  margin: 0 10px;
+}
+
+.scores-container {
+  height: 90%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.scores-container > * {
+  flex: 1;
 }
 
 .upcoming-title {
@@ -37,7 +55,7 @@
 
 .upcoming-events-list {
   width: 100%;
-  font-size: 5rem;
+  font-size: 3.8rem;
   letter-spacing: 1px;
   overflow-y: auto;
   padding: 0 5%;
@@ -66,4 +84,24 @@
 
 .upcoming-events-list span:nth-of-type(2) a {
   text-decoration: none;
+}
+
+.scores {
+  padding: 30px 70px;
+  overflow: auto;
+}
+
+.scores h1 {
+  font-size: 4rem;
+  text-align: center;
+  padding-bottom: 10px;
+  font-weight: 500;
+}
+
+.scores p {
+  font-size: 2.6rem;
+}
+
+.scores span {
+  float: right;
 }

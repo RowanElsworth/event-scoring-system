@@ -1,9 +1,9 @@
 $(document).ready(function() {
 
   // authentication check
-  if (localStorage.getItem('user')) {
-    window.location.href = '/pages/schedule/schedule.html'; // redirect to schedule page
-  }
+  // if (localStorage.getItem('user')) {
+  //   window.location.href = '/pages/schedule/schedule.html'; // redirect to schedule page
+  // }
 
   // handles form submission and authentication
   $('form').submit(function(event) {
