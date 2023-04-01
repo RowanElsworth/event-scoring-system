@@ -1,10 +1,5 @@
 import http.server
 import os
-import json
-import base64
-import hashlib
-import sqlite3
-import urllib.parse
 
 # Define the file types that can be served
 FILE_TYPES = {
@@ -17,9 +12,6 @@ FILE_TYPES = {
 # Define the root directory of the project
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# Define the username and password for basic authentication
-USERNAME = 'admin'
-PASSWORD = 'password'
 
 class RequestHandler(http.server.BaseHTTPRequestHandler):
     def serve_file(self, file_path):
@@ -44,7 +36,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
           self.serve_file(file_path)
           return
         if url == '':
-          file_path = 'pages/index.html'
+          file_path = 'pages/overview.html'
           self.serve_file(file_path)
           return
         if url == 'scoreboard':
@@ -59,7 +51,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
           file_path = 'pages/teams.html'
           self.serve_file(file_path)
           return
-
+        
         # Serve the requested file
         file_extension = os.path.splitext(url)[1]
         if file_extension not in FILE_TYPES:
@@ -68,14 +60,7 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 
         self.serve_file(url)
 
-def load_users():
-    with open('users.json') as file:
-        return json.load(file)
-
 def run_server():
-    # Load the user data
-    users = load_users()
-
     # Start the server
     PORT = 3001
     server_address = ('', PORT)

@@ -12,13 +12,11 @@
 <div class="hdr-content">
   <p class="hdr-next-event"></p>
   <p class="hdr-time">00:00:00</p>
-  <div class="hdr-username-dropdown">
-    <p class="hdr-username">undefined</p>
-    <ul class="dropdown-menu">
-      <li><button class="logout-btn">Logout</button></li>
-    </ul>
+  <div class="img-container">
+    <img src="/college_logo.png" alt="">
   </div>
 </div>
+
 
 <!-- styles -->
 <style>
@@ -71,7 +69,8 @@
 
   .hdr-content {
     display: flex;
-    gap: 55px;
+    align-items: center;
+    gap: 30px;
   }
 
   .hdr-content span {
@@ -109,6 +108,22 @@
 
   .logout-btn:hover {
     background-color: lightgrey;
+  }
+
+  .img-container {
+    height: 65px;
+    width: 65px;
+    background: #002440;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1; /* ensures that the image will always be a square no matter the screen size */
+  }
+
+  img {
+    width: 90%;
+    height: 90%;
   }
 </style>
 <script>
@@ -163,16 +178,5 @@
       seconds = (seconds < 10 ? "0" : "") + seconds;
       $('.hdr-time').text(hours + ":" + minutes + ":" + seconds);
     }, 1000);
-
-    // sets the username
-    var user = JSON.parse(localStorage.getItem('user')) || "unknown";
-    var username = user.username;
-    $('.hdr-username').text(`${username} ↓`)
-
-    // logs out user
-    $('.logout-btn').click(function() {
-      localStorage.removeItem('user'); // remove user information from local storage
-      window.location.href = '/'; // redirect to login page
-    });
   });
 </script>

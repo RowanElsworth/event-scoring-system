@@ -36,9 +36,6 @@ $(document).ready(function() {
         score: scores[participant.indexID] || 0 // Use 0 as default score if participant did not compete
       });
     }
-
-    console.log('ind scores');
-    console.log(leaderboard);
     localStorage.setItem('indScores', JSON.stringify(leaderboard));
   }
 
@@ -84,9 +81,6 @@ $(document).ready(function() {
         score: teamScore
       });
     }
-  
-    console.log('team scores')
-    console.log(leaderboard);
     localStorage.setItem('teamScores', JSON.stringify(leaderboard));
   }  
 

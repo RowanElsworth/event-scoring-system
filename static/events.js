@@ -141,7 +141,6 @@ $(document).ready(function() {
     $(".edit-event-popup-container").show();
     // Get the index of the event to edit from the data-index attribute of the clicked button
     editIndex = $(this).attr("data-index");
-    console.log(editIndex);
     // Get the event data from local storage
     var eventType = $(this).closest(".events").hasClass("team") ? "Team" : "Individual";
     var events = eventType === "Team" ? JSON.parse(localStorage.getItem('teamEvents')) : JSON.parse(localStorage.getItem('indEvents'));

@@ -50,12 +50,21 @@
         <div class="add-event-popup">
           <button class="close-btn">X</button>
           <h2>Add Event</h2>
-            <label for="name">Event Name:</label>
-            <input type="text" id="name" name="name">
-            <label for="start-time">Start Time:</label>
-            <input type="time" id="start-time" name="start-time">
-            <button class="submit-btn">Submit</button>
-            <button class="cancel-btn">Cancel</button>
+            <div class="add-input-container">
+              <div>
+                <label for="name">Event Name:</label>
+                <input type="text" id="name" name="name">
+              </div>
+              <div>
+                <label for="start-time">Start Time:</label>
+                <input type="time" id="start-time" name="start-time">
+              </div>
+            </div>
+
+            <div class="add-btns-container">
+              <button class="submit-btn">Submit</button>
+              <button class="cancel-btn">Cancel</button>
+            </div>
         </div>
       </section>
       <section class="edit-event-popup-container">
@@ -63,13 +72,21 @@
           <button class="close-btn">X</button>
           <h2>Edit Event</h2>
           <p class="edit-event-type"></p>
-          <input class="edit-event-name" type="text" placeholder=""></input>
-          <input class="edit-event-time" type="time" placeholder=""></input>
-          <p>Participants</p>
-          <div class="participants-array"></div>
-          <button class="confirm-btn">Confirm Changes</button>
-          <button class="delete-btn">Delete Event</button>
-          <button class="cancel-btn">Cancel</button>
+          <div class="input-container">
+            <div>
+              <label for="">Event name:</label>
+              <input class="edit-event-name" type="text" placeholder=""></input>
+            </div>
+            <div>
+              <label for="">Event starting time:</label>
+              <input class="edit-event-time" type="time" placeholder=""></input>
+            </div>
+          </div>
+          <div class="edit-btns-container">
+            <button class="confirm-btn">Confirm Changes</button>
+            <button class="delete-btn">Delete Event</button>
+            <button class="cancel-btn">Cancel</button>
+          </div>
         </div>
       </section>
     </main>

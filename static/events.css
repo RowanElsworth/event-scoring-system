@@ -64,6 +64,30 @@
 
 .event-start-controls > * {
   flex: 1;
+  
+}
+
+.edit-btn {
+  all: unset;
+  flex: 1;
+  text-align: center;
+  background: white;
+  border: 1px solid black;
+  font-size: 2.4rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+
+.add-btn {
+  all: unset;
+  margin: 10px 0;
+  text-align: center;
+  background: white;
+  border: 1px solid black;
+  font-size: 2.4rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  border-radius: 0.4rem;
 }
 
 /* add event pop up box */
@@ -89,6 +113,10 @@
   width: 40%;
   height: 50%;
   border-radius: 20px;
+  border-radius: 2.0rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .close-btn {
@@ -99,6 +127,61 @@
   background: none;
   border: none;
   cursor: pointer;
+}
+
+.add-event-popup h2 {
+  font-size: 3.6rem;
+  margin-top: 0.5rem;
+}
+
+.add-input-container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.add-input-container > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-input-container div label {
+  font-size: 2.4rem;
+  padding: 2px;
+}
+
+.add-input-container div input {
+  font-size: 1.8rem;
+  padding: 2px;
+}
+
+.add-btns-container {
+  margin-top: auto;
+  display: flex;
+  width: 100%;
+}
+
+.add-btns-container > * {
+  all: unset;
+  margin-top: auto;
+  text-align: center;
+  background: white;
+  font-size: 3rem;
+  padding: 0.5rem 0;
+  border-top: 2px solid black;
+  cursor: pointer;
+  flex: 1;
+}
+
+.add-btns-container > *:nth-of-type(1) {
+  flex: 2;
+  border-radius: 0 0 0 1.5rem;
+  border-right: 2px solid black;
+}
+
+.add-btns-container > *:nth-of-type(2) {
+  border-radius: 0 0 1.5rem 0;
 }
 
 /* edit event pop up box */
@@ -123,5 +206,77 @@
   border: 2px solid black;
   width: 40%;
   height: 50%;
-  border-radius: 20px;
+  border-radius: 2.0rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.edit-event-popup h2 {
+  font-size: 3.6rem;
+  margin-top: 0.5rem;
+}
+
+.edit-event-type {
+  font-size: 2.6rem;
+}
+
+.input-container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-container > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.input-container div label {
+  font-size: 2.4rem;
+  padding: 2px;
+}
+
+.input-container div input {
+  font-size: 1.8rem;
+  padding: 2px;
+}
+
+.edit-btns-container {
+  margin-top: auto;
+  display: flex;
+  width: 100%;
+}
+
+.edit-btns-container > * {
+  all: unset;
+  margin-top: auto;
+  text-align: center;
+  background: white;
+  font-size: 3rem;
+  padding: 0.5rem 0;
+  border-top: 2px solid black;
+  cursor: pointer;
+  flex: 1;
+}
+
+.edit-btns-container > *:nth-of-type(1) {
+  flex: 2;
+  border-radius: 0 0 0 1.5rem;
+  border-right: 2px solid black;
+}
+
+.edit-btns-container > *:nth-of-type(2) {
+  background: red;
+  color: white;
+  border-right: 2px solid black;
+}
+
+.edit-btns-container > *:nth-of-type(2):hover {
+  background: rgb(255, 88, 88)
+}
+
+.edit-btns-container > *:nth-of-type(3) {
+  border-radius: 0 0 1.5rem 0;
 }

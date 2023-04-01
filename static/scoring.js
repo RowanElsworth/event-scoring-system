@@ -73,6 +73,7 @@ $(document).ready(function() {
     editIndex = parseInt($(this).attr('data-index'));
     // get the participant ids
     info = editType === 'Individual' ? getInfo(indEvents, editIndex) : getInfo(teamEvents, editIndex);
+    $('.event-info').text(`${info.type} ${info.name} @ ${info.startTime}`)
     // sorts in alphbetical order
     participants = info.participants.sort();
     // gets the participants names using the indexes from the function and stores in the variable
@@ -117,22 +118,17 @@ $(document).ready(function() {
     // chooses between indEvents and teamEvents
     let events = editType === 'Individual' ? indEvents: teamEvents
 
-    console.log('old events:')
-    console.log(events)
     // find the event with matching index and update scores array
     var eventFound = false;
     for (var i = 0; i < events.length; i++) {
       if (events[i].indexID === editIndex) {
-        console.log(`found and pushed ${scores} to event index: ${editIndex}`);
         events[i].scores = scores;
         eventFound = true;
         break;
       } else {
-        console.log(`No event found with index: ${editIndex}`);
+        alert(`No event found with index: ${editIndex}. Please restart and try again.`);
       }
-    } 
-    console.log('new events:')
-    console.log(events)
+    }
 
     eventType = editType === 'Individual' ? "ind" : "team"
     // push the updated indEvents list to local storage
@@ -218,7 +214,7 @@ $(document).ready(function() {
       });
     }
     localStorage.setItem('teamScores', JSON.stringify(leaderboard));
-  }  
+  }
 
   // closes pop up
   function closePopup() {

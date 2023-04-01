@@ -130,50 +130,48 @@ $(document).ready(function() {
   // Edit participant events - shows pop up and displays events
   $('.ind-edit-events-btn').click(function() {
     $('.events-list').empty();
-    // get events and participants from local storage
-    var indEvents = JSON.parse(localStorage.getItem('indEvents')) || [];
+    if (editIndex != null) { // checks if editIndex is equal to anything
+      // get events and participants from local storage
+      var indEvents = JSON.parse(localStorage.getItem('indEvents')) || [];
 
-    var tickedBoxesCount = 0; // initialize the counter variable
+      var tickedBoxesCount = 0; // initialize the counter variable
 
-    $.each(indEvents, function(index, event) {
-      var eventDiv = $('<div>');
-      eventDiv.append('<div>' + event.name + '</div>');
-      eventDiv.append('<div>' + event.startTime + '</div>');
-      var checkbox = $('<input type="checkbox">');
-      checkbox.attr('data-indexID', event.indexID);
+      $.each(indEvents, function(index, event) {
+        var eventDiv = $('<div>');
+        eventDiv.append('<div>' + event.name + '</div>');
+        eventDiv.append('<div>' + event.startTime + '</div>');
+        var checkbox = $('<input type="checkbox">');
+        checkbox.attr('data-indexID', event.indexID);
 
-      // checks if the editIndex (the participant being edited) is in the participants array
-      // of the events and checks the box if they are
-      if (event.participants.indexOf(editIndex) !== -1) {
-        checkbox.prop('checked', true);
-        tickedBoxesCount++; // increment the counter variable
-      }
-
-      $('.confirm-btn').text(`Confirm ${tickedBoxesCount} / ${maxEvents}`)
-
-      checkbox.change(function() {
-        if ($(this).is(':checked')) {
-          tickedBoxesCount++;
-        } else {
-          tickedBoxesCount--;
+        // checks if the editIndex (the participant being edited) is in the participants array
+        // of the events and checks the box if they are
+        if (event.participants.indexOf(editIndex) !== -1) {
+          checkbox.prop('checked', true);
+          tickedBoxesCount++; // increment the counter variable
         }
-        console.log(tickedBoxesCount)
+
         $('.confirm-btn').text(`Confirm ${tickedBoxesCount} / ${maxEvents}`)
-        if (tickedBoxesCount > maxEvents) {
-          $('.confirm-btn').css('color', 'red').prop('disabled', true)
-        } else {
-          $('.confirm-btn').css('color', '').prop('disabled', false)
-        }
+
+        checkbox.change(function() {
+          if ($(this).is(':checked')) {
+            tickedBoxesCount++;
+          } else {
+            tickedBoxesCount--;
+          }
+          $('.confirm-btn').text(`Confirm ${tickedBoxesCount} / ${maxEvents}`)
+          if (tickedBoxesCount > maxEvents) {
+            $('.confirm-btn').css({'color': 'red', 'background': 'lightgrey', 'cursor': 'not-allowed'}).prop('disabled', true)
+          } else {
+            $('.confirm-btn').css('color', '').prop('disabled', false)
+          }
+        });
+
+        $('.events-list').append(eventDiv);
+        eventDiv.append(checkbox); // append the checkbox to the event div
       });
 
-      $('.events-list').append(eventDiv);
-      eventDiv.append(checkbox); // append the checkbox to the event div
-    });
-
-    // display the ticked boxes count
-    console.log(tickedBoxesCount)
-
-    $('.modify-event-popup-container').show();
+      $('.modify-event-popup-container').show();
+    }
   });
 
   // updates the participants's "events" arrays and events's "participant" arrays
@@ -187,19 +185,13 @@ $(document).ready(function() {
       eventIndexes.push(parseInt($(this).attr('data-indexid')));
     });
 
-    console.log(eventIndexes)
-
     // Find the participant object with the matching indexID
     var participant = indParticipants.find(function(p) {
       return p.indexID === editIndex;
     });
 
-    console.log(participant)
-
     // Update the participant's "events" array
     participant.events = eventIndexes;
-
-    console.log(participant)
 
     // Update the "participants" array of the corresponding event objects
     $.each(indEvents, function(index, event) {
@@ -213,8 +205,6 @@ $(document).ready(function() {
         });
       }
     });
-
-    console.log(indEvents)
 
     // Save the updated data to local storage
     localStorage.setItem('indParticipants', JSON.stringify(indParticipants));
